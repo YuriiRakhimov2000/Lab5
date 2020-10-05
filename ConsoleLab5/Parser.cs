@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,7 +16,7 @@ namespace ConsoleLab5
         {
             BookPagesUrls = new List<string>();
         }
-        public List<String> BookPagesUrls;
+        public List<string> BookPagesUrls;
 
         public string GetBookDownloadLinkPdf(string bookUrl)
         {
@@ -25,14 +26,14 @@ namespace ConsoleLab5
             string item = null;
             try
             {
-                doc = web.Load(bookUrl); //From 30 links, usually only 10 load properly
+                doc = web.Load(bookUrl); 
                  item = doc.DocumentNode.SelectSingleNode(".//span[contains(@class,'download-links')]")
                     .Descendants("a").FirstOrDefault().Attributes["href"].Value;
                  
             }
             catch (WebException)
             {
-
+                Console.WriteLine("A WebException has been caught.");
             }
          
             
@@ -42,10 +43,7 @@ namespace ConsoleLab5
         {
 
             HtmlAgilityPack.HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
-
             HtmlAgilityPack.HtmlDocument doc = null;
-
-
 
             try
             {
@@ -53,7 +51,7 @@ namespace ConsoleLab5
             }
             catch (WebException)
             {
-
+                Console.WriteLine("A WebException has been caught.");
             }
 
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes(".//article"))
@@ -66,15 +64,16 @@ namespace ConsoleLab5
 
         }
         public void GetAllBookPagesUrls()
-       {
-          
-            ParallelLoopResult par =  Parallel.For(1, 5,GetAllBookFromPageNumber);
-          
-           if (par.IsCompleted)
-           {
-               Console.WriteLine("Completed");
-           }
-       }
+        {
+
+            //get books href from 1 page to 5 page (40 books)
+            ParallelLoopResult par = Parallel.For(1, 5, GetAllBookFromPageNumber);
+
+            if (par.IsCompleted)
+            {
+                Console.WriteLine("Completed");
+            }
+        }
 
      
 
@@ -88,8 +87,9 @@ namespace ConsoleLab5
 
             string bookFile = GetBookDownloadLinkPdf("http://www.allitebooks.org/firewalls-dont-stop-dragons/");
             string bookName = bookFile.Substring(37);
-            string path = "D:\\F1\\F2\\";
-            Client.DownloadFile(bookFile, string.Concat(path, bookName));
+            string path = @"D:\F1\F2\";
+             
+            Client.DownloadFile(bookFile, Path.Combine(path,bookName));
 
         }
 
