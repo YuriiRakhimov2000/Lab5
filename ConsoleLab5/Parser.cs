@@ -23,19 +23,13 @@ namespace ConsoleLab5
           
             HtmlAgilityPack.HtmlDocument doc = null;
             string item = null;
-            try
-            {
+            
                 doc = web.Load(bookUrl); //From 30 links, usually only 10 load properly
                  item = doc.DocumentNode.SelectSingleNode(".//span[contains(@class,'download-links')]")
                     .Descendants("a").FirstOrDefault().Attributes["href"].Value;
                  
-            }
-            catch (WebException)
-            {
-
-            }
-         
             
+
             return item;
         }
         public void GetAllBookFromPageNumber(int numberOfPage)
@@ -45,16 +39,7 @@ namespace ConsoleLab5
 
             HtmlAgilityPack.HtmlDocument doc = null;
 
-
-
-            try
-            {
-                doc = web.Load($"http://www.allitebooks.org/page/{numberOfPage}");
-            }
-            catch (WebException)
-            {
-
-            }
+            doc = web.Load($"http://www.allitebooks.org/page/{numberOfPage}");
 
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes(".//article"))
             {
